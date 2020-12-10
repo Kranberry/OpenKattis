@@ -6,10 +6,15 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
+let inputs;
+
 function Input(state = 0){
 
     rl.question("", (answer) => {
+        (state === 0) ? inputs = answer.slice(" ") : // ;
         
+
+        (state === 1) ? rl.close() : Input(++state);
     });
 }
 
