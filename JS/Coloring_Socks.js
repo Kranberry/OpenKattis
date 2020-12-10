@@ -8,7 +8,7 @@ const rl = readline.createInterface({
 
 let inputs;
 let socks;
-let numberOfMachines = 0;
+let washedSocks = [];
 let machineCapacity;
 let amountOfSocks;
 let absoluteDifference;
@@ -16,77 +16,57 @@ let amountOfMachines = 0;
 
 // amountOfSocks, machineCap, maxColorDiff
 
-function Input(state = 0){
+function Input(state = 0) {
 
     rl.question("", (answer) => {
-        (state === 0) ? inputs = answer.split(" ") : socks = answer.split(" ");
+        (state === 0) ? inputs = answer.split(" "): socks = answer.split(" ");
 
-        amountOfSocks = Number(inputs[0]);
-        machineCapacity = Number(inputs[1]);
-        absoluteDifference = Number(inputs[2]);
+        if (state === 0) {
+            amountOfSocks = Number(inputs[0]);
+            machineCapacity = Number(inputs[1]);
+            absoluteDifference = Number(inputs[2]);
+        }
 
-        if(state === 1){
+        if (state === 1) {
 
-            for(let i = 0; i < socks.length; i++){
+            for (let i = 0; i < socks.length; i++) {
                 socks[i] = Number(socks[i]);
+                washedSocks[i] = false;
             }
 
-            // if( socks.length > machineCapacity ){
-            //     amountOfMachines = 1;
-            // }
-
             socks.sort((a, b) => {
-                return a - b;
+                return b - a;
             });
-            // console.log(socks);
-            socks.reverse();
-            // console.log(socks);
 
-            for(let i = 0; i < socks.length; i++)
-            {
-                // i = the sock I want to check against the next sock
-                // If the sock is dirty. We need a new washing machine
-                if(socks[i] !== true)
-                {
+            let i = 0;
+            // for(let i = 0; i < socks.length; i++)
+            while (i < socks.length) {
+                if (!washedSocks[i]) {
                     amountOfMachines++;
-                    let socksInMachine = 0;
 
-                    // j = the sock I want to check against
-                    for(let j = i; j < socks.length; j++)
-                    {
-                        if(socks[i] - socks[j] <= absoluteDifference && socks[i] !== true && socks[j] !== true && socks[j] != undefined)
-                        {
-                            // console.log("i " + socks[i]);
-                            // console.log("j " + socks[j]);
-                            // console.log(socks[i] - socks[j] + " :ASD:ASD");
-                            socksInMachine++;
-                            socks[j] = true;
+                    let j = i;
+                    // for(let j = i; j < socks.length; j++)
+                    while (j < socks.length) {
+                        if (socks[i] - socks[j] <= absoluteDifference) {
+                            washedSocks[j] = true;
+                            amountOfSocks++;
 
-                            if(socksInMachine === machineCapacity)
-                            {
-                                // console.log("fdfgdg");
-                                socksInMachine = 0;
+                            if (amountOfSocks === machineCapacity) {
+                                amountOfSocks = 0;
                                 break;
                             }
                         }
-                        else
-                        {
-                            break;
-                        }
+                        j++;
                     }
-                    
                 }
+                i++;
             }
 
-            PrintOut(amountOfMachines);
+            console.log(amountOfMachines);
         }
 
-        (state === 1) ? rl.close() : Input(++state);
+        (state === 1) ? rl.close(): Input(++state);
     });
 }
 
 Input();
-
-function PrintOut(answer) {
-    console.log(answer);
-}
